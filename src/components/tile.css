@@ -1,0 +1,17 @@
+
+.Tile
+{
+    background-color: lightgray;
+    border: 1px solid gray;
+}
+
+.Tile:hover
+{
+    background-color: gray;
+    border: 1px solid lightgray;
+}
+
+.Revealed
+{
+    background-color: red;
+}
