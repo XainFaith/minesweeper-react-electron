@@ -14,7 +14,7 @@ export default function Tile({onTileClicked, isBomb, isRevealed})
         }
 
         setRevealed(true);
-        onTileClicked(key, isBomb);
+        onTileClicked(isBomb);
     }
 
     return <div className={classes} onClick={tlieClickHandler}/>;
