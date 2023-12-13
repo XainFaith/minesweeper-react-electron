@@ -7,7 +7,7 @@ const createWindow = () => {
     height: 768
   })
 
-  console.log(__dirname);
+  win.setMenu(null);
   win.loadFile(path.join(__dirname,"build/index.html"));
 }
 
