@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function Field({onGameStateChange, gridSize, bombCount})
 {
-    const [gameFieldValues, setGameFieldValues] = React.useState(null);
+    const [gameFieldValues, setGameFieldValues] = React.useState(GenerateGameFieldValues);
 
     function onTileClicked(isBomb, bombProximity)
     {
@@ -16,8 +16,9 @@ export default function Field({onGameStateChange, gridSize, bombCount})
             for(let i =0; i < gameFieldValues.length; i++)
             {
                 values[i].isRevealed = true;
-                setGameFieldValues(values);
             }
+
+            setGameFieldValues(values);
         }
 
         //TODO Implement flood fill for contiguous empty tiles
@@ -138,44 +139,36 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     tileValues[index].value = tileValue;
                 }
             }
-
-            setGameFieldValues(tileValues);
         }
+        return tileValues;
     }
 
-    if(gameFieldValues === null)
+    console.log("rendered");
+    //Generate Game Tiles
+    const rows = [];
+    for(let y=0; y < gridSize; y++)    
     {
-       GenerateGameFieldValues();
-    }
-    else
-    {
-        //Generate Game Tiles
-        const rows = [];
-        for(let y=0; y < gridSize; y++)    
+        const gameTiles = [];
+        for(let x =0; x < gridSize; x++)
         {
-            const gameTiles = [];
-            for(let x =0; x < gridSize; x++)
+            let index = y * gridSize + x;
+            let isBombTile = false;
+            if(gameFieldValues[index].value == -1)
             {
-                let index = y * gridSize + x;
-                let isBombTile = false;
-                if(gameFieldValues[index].value == -1)
-                {
-                    isBombTile = true;
-                }
-
-                gameTiles.push(<Tile isBomb={isBombTile} isRevealed={gameFieldValues[index].isRevealed} key={index} bombProximity={gameFieldValues[index].value} onTileClicked={onTileClicked}/>);
+                isBombTile = true;
             }
 
-            let rowKey = "row" + y;
-            rows.push(<div className="FieldRow" key={rowKey}>{gameTiles}</div>);
+            gameTiles.push(<Tile isBomb={isBombTile} isRevealed={gameFieldValues[index].isRevealed} key={index} bombProximity={gameFieldValues[index].value} onTileClicked={onTileClicked}/>);
         }
 
-
-        return (
-            <div className="GameField">
-                {rows}
-            </div>
-        )
+        let rowKey = "row" + y;
+        rows.push(<div className="FieldRow" key={rowKey}>{gameTiles}</div>);
     }
 
+
+    return (
+        <div className="GameField">
+            {rows}
+        </div>
+    )
 }
