@@ -19,7 +19,7 @@ export default function Tile({onTileClicked, isBomb, isRevealed, bombProximity})
 
     if(bombProximity >= 0 && (revealed || isRevealed))
     {
-        return <div className={classes}>{bombProximity}</div>;
+        return <div className={classes} proximity={bombProximity} />;
     }
     
     return <div className={classes} onClick={tlieClickHandler}/>;
