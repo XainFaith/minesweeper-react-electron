@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./tile.css";
 
-export default function Tile({onTileClicked, isBomb, isRevealed})
+export default function Tile({onTileClicked, isBomb, isRevealed, bombProximity})
 {
     const [revealed, setRevealed] = useState(isRevealed);
     const classes = "Tile" + ((revealed | isRevealed) ? (isBomb ? " Boom" : " Revealed") : "");
@@ -17,5 +17,10 @@ export default function Tile({onTileClicked, isBomb, isRevealed})
         onTileClicked(isBomb);
     }
 
+    if(bombProximity >= 0 && (revealed || isRevealed))
+    {
+        return <div className={classes}>{bombProximity}</div>;
+    }
+    
     return <div className={classes} onClick={tlieClickHandler}/>;
 }
