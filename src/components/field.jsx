@@ -5,12 +5,39 @@ import { useState } from "react";
 
 export default function Field({onGameStateChange, gridSize, bombCount})
 {
-    const [gameField, setGameField] = React.useState(null);
+    const [gameFieldValues, setGameFieldValues] = React.useState(null);
 
-    function GenerateGameField()
+    function onTileClicked(isBomb, bombProximity)
     {
-        console.log("Generating Game Field");
-        let gameFieldValues = [gridSize * gridSize];
+        //Check for game over condition
+        if(isBomb)
+        {
+            let values = [...gameFieldValues];
+            for(let i =0; i < gameFieldValues.length; i++)
+            {
+                values[i].isRevealed = true;
+                setGameFieldValues(values);
+            }
+        }
+
+        //TODO Implement flood fill for contiguous empty tiles
+        if(bombProximity == 0)
+        {
+
+        }
+
+        //Check for victory condition if all tiles that are not bombs have been tested win condition is present.
+        
+    }
+
+    function GenerateGameFieldValues()
+    {
+        let tileValues = [gridSize * gridSize];
+
+        for(let i =0; i < gridSize * gridSize; i++)
+        {
+            tileValues[i] = {value: 0, isRevealed: false};
+        }
 
         //Generate random bomb placments
         for(let bombs =0; bombs < bombCount;)
@@ -18,9 +45,9 @@ export default function Field({onGameStateChange, gridSize, bombCount})
             let x = Math.floor(Math.random() * gridSize);
             let y = Math.floor(Math.random() * gridSize);
             let index = y * gridSize + x;
-            if(gameFieldValues[index] != -1)
+            if(tileValues[index] != -1)
             {
-                gameFieldValues[index] = -1;
+                tileValues[index].value = -1;
                 bombs++;
             }
         }
@@ -31,7 +58,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
             for(let x=0; x < gridSize; x++)
             {
                 let index = y * gridSize + x;
-                if(gameFieldValues[index] != -1)
+                if(tileValues[index].value != -1)
                 {
                     let tileValue = 0;
                     let utilIndex= 0;
@@ -39,7 +66,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(x-1 >= 0 && y-1 >= 0) //Top Left
                     {
                         utilIndex = (y-1) * gridSize + (x-1);
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
@@ -48,7 +75,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(y-1 >= 0) //Top middle
                     {
                         utilIndex = (y-1) * gridSize + x;
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
@@ -57,7 +84,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(x+1 < gridSize && y-1 >= 0) //Top Right
                     {
                         utilIndex = (y-1) * gridSize + (x+1);
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
@@ -66,7 +93,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(x-1 >= 0) //Left
                     {
                         utilIndex = y * gridSize + (x-1);
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
@@ -75,7 +102,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(x+1 < gridSize) //Right
                     {
                         utilIndex = y * gridSize + (x+1);
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
@@ -84,7 +111,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(x-1 >= 0 && y+1 < gridSize) //Bottom Left
                     {
                         utilIndex = (y+1) * gridSize + (x-1);
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
@@ -93,7 +120,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(y+1 < gridSize) //Bottom
                     {
                         utilIndex = (y+1) * gridSize + x;
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
@@ -102,17 +129,26 @@ export default function Field({onGameStateChange, gridSize, bombCount})
                     if(x+1 < gridSize && y+1 < gridSize) //Bottom Right
                     {
                         utilIndex = (y+1) * gridSize + (x+1);
-                        if(gameFieldValues[utilIndex] == -1)
+                        if(tileValues[utilIndex].value == -1)
                         {
                             tileValue++;
                         }
                     }
 
-                    gameFieldValues[index] = tileValue;
+                    tileValues[index].value = tileValue;
                 }
             }
-        }
 
+            setGameFieldValues(tileValues);
+        }
+    }
+
+    if(gameFieldValues === null)
+    {
+       GenerateGameFieldValues();
+    }
+    else
+    {
         //Generate Game Tiles
         const rows = [];
         for(let y=0; y < gridSize; y++)    
@@ -122,32 +158,24 @@ export default function Field({onGameStateChange, gridSize, bombCount})
             {
                 let index = y * gridSize + x;
                 let isBombTile = false;
-
-                if(gameFieldValues[index] == -1)
+                if(gameFieldValues[index].value == -1)
                 {
                     isBombTile = true;
                 }
 
-                gameTiles.push(<Tile isBomb={isBombTile} isRevealed={true} key={index} bombProximity={gameFieldValues[index]}/>);
+                gameTiles.push(<Tile isBomb={isBombTile} isRevealed={gameFieldValues[index].isRevealed} key={index} bombProximity={gameFieldValues[index].value} onTileClicked={onTileClicked}/>);
             }
 
             let rowKey = "row" + y;
             rows.push(<div className="FieldRow" key={rowKey}>{gameTiles}</div>);
         }
 
-        setGameField(rows);
-    }
 
-    if(gameField === null)
-    {
-       GenerateGameField();
+        return (
+            <div className="GameField">
+                {rows}
+            </div>
+        )
     }
-   
-
-    return (
-        <div className="GameField">
-            {gameField}
-        </div>
-    )
 
 }
