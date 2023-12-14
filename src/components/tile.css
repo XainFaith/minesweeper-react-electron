@@ -9,6 +9,7 @@
     height: 100%;
     font-stretch: expanded;
     text-align: center;
+    
 }
 
 .Tile:hover
@@ -32,7 +33,7 @@
 
 .Revealed[proximity="0"]
 {
-    background-color: white;
+    background-color: lightgray;
 }
 
 .Revealed[proximity="1"]
