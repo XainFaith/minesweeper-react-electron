@@ -17,5 +17,6 @@ html, body{
     margin: 20px;
     display: flex;
     align-items: stretch;
+    justify-content: center;
     width:100%;
  }
