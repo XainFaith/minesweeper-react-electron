@@ -24,6 +24,12 @@
     background-size: cover; 
 }
 
+.Flagged
+{
+    background-size: cover;
+    background-image: url("../../assets//flag.png");
+}
+
 .Boom, .Boom:hover
 {
     background-color: white;
