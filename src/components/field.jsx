@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Tile from "./tile.jsx";
 import "./field.css";
-import { useState } from "react";
 
 export default function Field({onGameStateChange, gridSize, bombCount})
 {
     const [gameFieldValues, setGameFieldValues] = React.useState(GenerateGameFieldValues);
+    const [revealedTileCount,setRevealTileCount] = useState(0);
+
+    var revealedCount = revealedTileCount;
 
     function onTileClicked(isBomb, bombProximity, x,y)
     {
@@ -19,50 +21,64 @@ export default function Field({onGameStateChange, gridSize, bombCount})
             }
 
             setGameFieldValues(values);
+            onGameStateChange("lose");
         }
 
         //TODO Implement flood fill for contiguous empty tiles
         if(bombProximity == 0)
         {
             let values = [...gameFieldValues];
-            emptyTileFill(x,y,values);
+            let count = emptyTileFill(x,y,values);
+            revealedCount += count;
+            setRevealTileCount(revealedCount);
             setGameFieldValues(values);
+        }
+        else
+        {
+            revealedCount++;                        
         }
 
         //Check for victory condition if all tiles that are not bombs have been tested win condition is present.
-        
+        if(revealedCount == ((gridSize * gridSize) - bombCount))
+        {
+            onGameStateChange("win");
+        }
+
     }
 
     function emptyTileFill(x,y,values)
     {
         //Bounds checks
-        if(x < 0 || x >= gridSize) return;
-        if(y < 0 || y >= gridSize) return;
+        if(x < 0 || x >= gridSize) return 0;
+        if(y < 0 || y >= gridSize) return 0;
 
         let index = y * gridSize + x;
 
-        if(values[index].isRevealed == true) return;
+        if(values[index].isRevealed == true) return 0;
 
         if(values[index].value != 0)
         {
             values[index].isRevealed = true;
-            return;
+            return 1;
         }
         else
         {
             values[index].isRevealed = true;
         }
 
-        emptyTileFill(x-1, y-1, values);
-        emptyTileFill(x, y-1, values);
-        emptyTileFill(x+1, y-1, values);
+        let count = 1;
 
-        emptyTileFill(x-1, y, values);
-        emptyTileFill(x+1, y, values);
+        count += emptyTileFill(x-1, y-1, values);
+        count += emptyTileFill(x, y-1, values);
+        count += emptyTileFill(x+1, y-1, values);
 
-        emptyTileFill(x-1, y+1, values);
-        emptyTileFill(x, y+1, values);
-        emptyTileFill(x+1, y+1, values);
+        count += emptyTileFill(x-1, y, values);
+        count += emptyTileFill(x+1, y, values);
+
+        count += emptyTileFill(x-1, y+1, values);
+        count += emptyTileFill(x, y+1, values);
+        count += emptyTileFill(x+1, y+1, values);
+        return count;
 
     }
 
@@ -150,7 +166,6 @@ export default function Field({onGameStateChange, gridSize, bombCount})
         let rowKey = "row" + y;
         rows.push(<div className="FieldRow" key={rowKey}>{gameTiles}</div>);
     }
-
 
     return (
         <div className="GameField">

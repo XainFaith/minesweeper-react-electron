@@ -28,6 +28,6 @@ export default function Tile({onTileClicked, isBomb, isRevealed, bombProximity, 
     {
         return <div className={classes} proximity={bombProximity} />;
     }
-    
+   
     return <div className={classes} onClick={tlieClickHandler} onContextMenu={tileFlaggedClick}/>;
-}
+};
