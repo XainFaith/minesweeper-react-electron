@@ -1,21 +1,76 @@
 
 .Tile
 {
-    background-color: lightgray;
+    background-color: white;
     border: 1px solid gray;
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
+    font-stretch: expanded;
+    text-align: center;
 }
 
 .Tile:hover
 {
-    background-color: gray;
-    border: 1px solid lightgray;
+    background-color: whitesmoke;
+    border: 1px solid white;
 }
 
-.Revealed
+.Revealed, .Revealed:hover
 {
-    background-color: red;
+    background-color: white;
+    background-size: cover; 
+}
+
+.Boom, .Boom:hover
+{
+    background-color: white;
+    background-size: cover; 
+    background-image: url("../../assets/bomb.png");
+}
+
+.Revealed[proximity="0"]
+{
+    background-color: white;
+}
+
+.Revealed[proximity="1"]
+{
+    background-image:  url("../../assets/one.png");
+}
+
+.Revealed[proximity="2"]
+{
+    background-image:  url("../../assets/two.png");
+}
+
+.Revealed[proximity="3"]
+{
+    background-image:  url("../../assets/three.png");
+}
+
+.Revealed[proximity="4"]
+{
+    background-image:  url("../../assets/four.png");
+}
+
+.Revealed[proximity="5"]
+{
+    background-image:  url("../../assets/five.png");
+}
+
+.Revealed[proximity="6"]
+{
+    background-image:  url("../../assets/six.png");
+}
+
+.Revealed[proximity="7"]
+{
+    background-image:  url("../../assets/seven.png");
+}
+
+.Revealed[proximity="8"]
+{
+    background-image:  url("../../assets/eight.png");
 }
