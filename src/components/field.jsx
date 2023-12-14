@@ -22,6 +22,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
 
             setGameFieldValues(values);
             onGameStateChange("lose");
+            return;
         }
 
         //TODO Implement flood fill for contiguous empty tiles
@@ -39,7 +40,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
         }
 
         //Check for victory condition if all tiles that are not bombs have been tested win condition is present.
-        if(revealedCount == ((gridSize * gridSize) - bombCount))
+        if(revealedCount >= ((gridSize * gridSize) - bombCount))
         {
             onGameStateChange("win");
         }
