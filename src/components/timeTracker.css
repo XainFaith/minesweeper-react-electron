@@ -1,0 +1,17 @@
+@font-face
+{
+    font-family: "digital-dream";
+    src: url("../../assets/DIGITALDREAM.ttf");
+}
+
+#StopWatch
+{
+    display: flex;
+    font-family: "digital-dream";
+    color: lightseagreen;
+    font-size: 1.5em;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+
