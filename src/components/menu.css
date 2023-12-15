@@ -1,0 +1,60 @@
+
+
+.MainMenu
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 350px;
+}
+
+.MainMenuContainer
+{
+    align-items: normal;
+    border: solid 1px lightgray;
+    background-color: white;
+    border-radius: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.MenuSection
+{
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+.MenuSection > label
+{
+    font-size: 1.15em;
+}
+
+.MenuButton
+{
+    margin: 10px;
+    padding: 10px;
+    width: 50%;
+    background-color: lightblue;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
+.MenuButton:hover
+{
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+}
+
+#CustomGameSection
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+}
