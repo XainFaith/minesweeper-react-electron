@@ -13,3 +13,12 @@
     aspect-ratio: 1 / 1;
     align-items: stretch;
 }
+
+.FieldHeader
+{
+    display: flex;
+    background-color: whitesmoke;
+    border-radius: 10px 10px 0 0;
+    justify-content: flex-end;
+}
+
