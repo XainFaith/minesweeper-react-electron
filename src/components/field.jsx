@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import Tile from "./tile.jsx";
 import "./field.css";
+import TimeTracker from "./timeTracker.jsx";
 
 export default function Field({onGameStateChange, gridSize, bombCount})
 {
-    const [gameFieldValues, setGameFieldValues] = React.useState(GenerateGameFieldValues);
+    const [gameFieldValues, setGameFieldValues] = useState(GenerateGameFieldValues);
     const [revealedTileCount,setRevealTileCount] = useState(0);
-
-    var revealedCount = revealedTileCount;
+    const [timerRunning, setTimerRunning] = useState(false);
 
     function onTileClicked(isBomb, bombProximity, x,y)
     {
+        setTimerRunning(true);
+
         //Check for game over condition
         if(isBomb)
         {
@@ -22,6 +24,7 @@ export default function Field({onGameStateChange, gridSize, bombCount})
 
             setGameFieldValues(values);
             onGameStateChange("lose");
+            setTimerRunning(false);
             return;
         }
 
@@ -30,21 +33,34 @@ export default function Field({onGameStateChange, gridSize, bombCount})
         {
             let values = [...gameFieldValues];
             let count = emptyTileFill(x,y,values);
-            revealedCount += count;
-            setRevealTileCount(revealedCount);
+            count += revealedTileCount;
+            //Check for victory condition if all tiles that are not bombs have been tested win condition is present.
+            if(count == ((gridSize * gridSize) - bombCount))
+            {
+                onGameStateChange("win");
+            }
+            console.log(count);
+            setRevealTileCount(count);
             setGameFieldValues(values);
         }
         else
         {
-            revealedCount++;                        
-        }
+            let count = revealedTileCount;
+            count++;
+            console.log(count);
+            //Check for victory condition if all tiles that are not bombs have been tested win condition is present.
+            if(count == ((gridSize * gridSize) - bombCount))
+            {
+                onGameStateChange("win");
+            }
 
-        //Check for victory condition if all tiles that are not bombs have been tested win condition is present.
-        if(revealedCount >= ((gridSize * gridSize) - bombCount))
-        {
-            onGameStateChange("win");
-        }
+            
+            let values = [...gameFieldValues];
+            values[y * gridSize + x].isRevealed = true;      
+            setGameFieldValues(values);    
+            setRevealTileCount(count);
 
+        }
     }
 
     function emptyTileFill(x,y,values)
@@ -112,8 +128,8 @@ export default function Field({onGameStateChange, gridSize, bombCount})
         {
             let x = Math.floor(Math.random() * gridSize);
             let y = Math.floor(Math.random() * gridSize);
-            let index = y * gridSize + x;
-            if(tileValues[index] != -1)
+            let index = (y * gridSize) + x;
+            if(tileValues[index].value != -1)
             {
                 tileValues[index].value = -1;
                 bombs++;
@@ -169,8 +185,11 @@ export default function Field({onGameStateChange, gridSize, bombCount})
     }
 
     return (
-        <div className="GameField">
-            {rows}
-        </div>
+            <div className="GameField">
+                <div className="FieldHeader">
+                    <TimeTracker isActive={timerRunning} />
+                </div>
+                {rows}
+            </div>
     )
 }
