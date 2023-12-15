@@ -3,19 +3,18 @@ import "./tile.css";
 
 export default function Tile({onTileClicked, isBomb, isRevealed, bombProximity, x,y})
 {
-    const [revealed, setRevealed] = useState(isRevealed);
     const [flagged, setFlagged] = useState(false);
 
-    const classes = "Tile" + ((revealed | isRevealed) ? (isBomb ? " Boom" : " Revealed") : "") + (flagged ? " Flagged" : "");
+    const classes = "Tile" + (isRevealed ? (isBomb ? " Boom" : " Revealed") : "") + (flagged ? " Flagged" : "");
 
     function tlieClickHandler()
     {
-        if(revealed)
+        //Ignore click event if the tile has already been revealed
+        if(isRevealed)
         {
             return;
         }
 
-        setRevealed(true);
         onTileClicked(isBomb, bombProximity, x,y);
     }
 
@@ -24,10 +23,10 @@ export default function Tile({onTileClicked, isBomb, isRevealed, bombProximity, 
         setFlagged(!flagged);
     }
 
-    if(bombProximity >= 0 && (revealed || isRevealed))
+    if(bombProximity >= 0 && isRevealed)
     {
         return <div className={classes} proximity={bombProximity} />;
     }
    
-    return <div className={classes} onClick={tlieClickHandler} onContextMenu={tileFlaggedClick}/>;
+    return <div className={classes} onClick={tlieClickHandler} onAuxClick={tileFlaggedClick} onContextMenu={tileFlaggedClick}/>;
 };
